@@ -9,6 +9,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Home from "./components/Home";
+import RegisterPage from "./pages/register";
 
 const Layout = () => {
   return(
@@ -27,10 +28,12 @@ const router = createBrowserRouter([
     errorElement: <div>404 not found</div>,
     children: [
       {index: true, element: <Home />},
+
       {
         path: "contact",
         element: <ContactPage />,
       },
+
       {
         path: "book",
         element: <BookPage />,
@@ -40,6 +43,11 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  
+  {
+    path: "/register",
+    element: <RegisterPage />,
   },
 ]);
 
