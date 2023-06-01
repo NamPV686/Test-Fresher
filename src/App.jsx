@@ -12,8 +12,12 @@ import Home from "./components/Home";
 import RegisterPage from "./pages/register";
 import { useEffect } from "react";
 import { callFetchAccount } from "./service/apiService";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { doGetAccountAction } from "./redux/account/accountSlice";
+import Loading from "./components/Loading";
+import NotFound from "./pages/Error";
+import AdminPage from "./components/Admin";
+import PrivateRoute from "./components/PrivateRoute";
 
 const Layout = () => {
   return(
@@ -25,40 +29,12 @@ const Layout = () => {
   )
 }
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    errorElement: <div>404 not found</div>,
-    children: [
-      {index: true, element: <Home />},
-
-      {
-        path: "contact",
-        element: <ContactPage />,
-      },
-
-      {
-        path: "book",
-        element: <BookPage />,
-      },
-    ],
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
-]);
-
 const App = () => {
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector(state => state.account.isAuthenticated);
 
   const getAccount = async() => {
+    if(window.location.pathname === '/login') return;
     const res = await callFetchAccount();
     
     if(res && res.data && res.data.user){
@@ -70,10 +46,73 @@ const App = () => {
     getAccount();
   }, [])
 
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Layout />,
+      errorElement: <NotFound />,
+      children: [
+        {index: true, element: <Home />},
+  
+        {
+          path: "contact",
+          element: <ContactPage />,
+        },
+  
+        {
+          path: "book",
+          element: <BookPage />,
+        },
+      ],
+    },
+  
+    {
+      path: "/admin",
+      element: <Layout />,
+      errorElement: <NotFound />,
+      children: [
+        {index: true, element: 
+          <PrivateRoute>
+            <AdminPage />
+          </PrivateRoute>
+        },
+  
+        {
+          path: "contact",
+          element: <ContactPage />,
+        },
+  
+        {
+          path: "book",
+          element: <BookPage />,
+        },
+      ],
+    },
+  
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+    
+    {
+      path: "/register",
+      element: <RegisterPage />,
+    },
+  ]);
+
   return(
-    <>
-      <RouterProvider router={router} />
-    </>
+    <div>
+      {isAuthenticated === true 
+      || window.location.pathname === '/login' 
+      || window.location.pathname === '/admin'
+      || window.location.pathname === '/'
+      ?
+        <RouterProvider router={router} />
+        :
+        <Loading />
+      }
+      
+    </div>
   )
 }
 

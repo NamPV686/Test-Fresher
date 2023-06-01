@@ -62,7 +62,7 @@ const LoginPage = () => {
                     </Form.Item>
 
                     <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" loading={isSubmit}>
                         Submit
                     </Button>
                     </Form.Item>
