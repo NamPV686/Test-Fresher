@@ -3,10 +3,14 @@ import './login.scss';
 import { useNavigate, Link } from 'react-router-dom';
 import { postLogin } from '../../service/apiService';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { doLoginAction } from '../../redux/account/accountSlice';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const [ isSubmit, setIsSubmit ] = useState(false);
+
+    const dispatch = useDispatch();
 
     const onFinish = async (values) => {
         const { username, password } = values;
@@ -17,6 +21,7 @@ const LoginPage = () => {
 
         if(res?.data){
             localStorage.setItem('access_token', res.data.access_token)
+            dispatch(doLoginAction(res.data.user))
             message.info('Đăng nhập thành công!');
             navigate('/');
         } else{

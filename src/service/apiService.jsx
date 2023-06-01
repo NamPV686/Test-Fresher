@@ -8,7 +8,12 @@ const postLogin = (username, password) => {
     return axios.post(`api/v1/auth/login`, {username, password})
 }
 
+const callFetchAccount = () => {
+    return axios.get(`api/v1/auth/account`)
+}
+
 export{
     postRegister,
-    postLogin
+    postLogin,
+    callFetchAccount
 }
