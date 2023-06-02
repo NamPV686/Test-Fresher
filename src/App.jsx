@@ -15,9 +15,10 @@ import { callFetchAccount } from "./service/apiService";
 import { useDispatch, useSelector } from 'react-redux';
 import { doGetAccountAction } from "./redux/account/accountSlice";
 import Loading from "./components/Loading";
-import NotFound from "./pages/Error";
+import NotFound from "./pages/NotFound";
 import AdminPage from "./components/Admin";
 import PrivateRoute from "./components/PrivateRoute";
+import Authorized from "./pages/NotPermitted";
 
 const Layout = () => {
   return(
@@ -25,6 +26,21 @@ const Layout = () => {
       <Header />
       <Outlet />
       <Footer />
+    </div>
+  )
+}
+
+const LayoutAdmin = () => {
+  const isAdminRoute = window.location.pathname.startsWith('/admin');
+  const user = useSelector(state => state.account.user);
+  const userRole = user.role;
+  console.log(isAdminRoute, user, userRole)
+
+  return(
+    <div className="layout-app">
+      {isAdminRoute && userRole === 'ADMIN' && <Header />}
+      <Outlet />
+      {isAdminRoute && userRole === 'ADMIN' && <Footer />}
     </div>
   )
 }
@@ -73,7 +89,7 @@ const App = () => {
   
     {
       path: "/admin",
-      element: <Layout />,
+      element: <LayoutAdmin />,
       errorElement: <NotFound />,
       children: [
         {index: true, element: 
