@@ -3,16 +3,19 @@ import { Navigate } from 'react-router-dom';
 
 const PrivateRoute = (props) => {
     const isAuthenticated = useSelector(state => state.account.isAuthenticated);
-    const { children } = props;
 
     return(
-        <>
+        <div>
             {isAuthenticated === true ?
-                <>{children}</>
+                <>{props.children}</>
                 :
-                <Navigate to={"/login"} replace />
+                <Navigate to="/login" replace />
             }
-        </>
+            
+            {/* {
+                isAuthenticated === true ? alert('Hello') : alert('No')
+            } */}
+        </div>
     )
 }
 

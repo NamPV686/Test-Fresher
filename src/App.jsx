@@ -31,14 +31,19 @@ const Layout = () => {
 
 const App = () => {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(state => state.account.isAuthenticated);
+  const isLoading = useSelector(state => state.account.isLoading);
 
   const getAccount = async() => {
-    if(window.location.pathname === '/login') return;
+    if(
+      window.location.pathname === '/login'
+      || window.location.pathname === '/register'
+      ) 
+    return;
+
     const res = await callFetchAccount();
     
-    if(res && res.data && res.data.user){
-      dispatch(doGetAccountAction(res.data.user));
+    if(res && res.data){
+      dispatch(doGetAccountAction(res.data));
     }
   }
 
@@ -102,9 +107,10 @@ const App = () => {
 
   return(
     <div>
-      {isAuthenticated === true 
+      {
+      isLoading === false
       || window.location.pathname === '/login' 
-      || window.location.pathname === '/admin'
+      || window.location.pathname === '/register'
       || window.location.pathname === '/'
       ?
         <RouterProvider router={router} />
